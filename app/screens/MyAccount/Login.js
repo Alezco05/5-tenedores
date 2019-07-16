@@ -1,10 +1,14 @@
 import React, {Component} from 'react';
 import {StyleSheet,View,Text,ActivityIndicator} from 'react-native'
 import t from 'tcomb-form-native';
-import {Image, Button } from 'react-native-elements';
+import {Image, Button, SocialIcon, Divider } from 'react-native-elements';
+import Toast from 'react-native-easy-toast';
+import * as firebase from  'firebase';
+import * as Facebook from 'expo';
+
 
 import {LoginStruck,LoginOptions} from '../../forms/Login';
-
+//import {Facebook, FacebookApi} from '../../utils/Social';
 const Form = t.form.Form;
 const url = "../../../assets/img/5-tenedores-letras-icono-logo.png";
 export default class Login extends Component{
@@ -13,15 +17,38 @@ export default class Login extends Component{
         this.state = {
             loginOptions: LoginOptions,
             loginStruck: LoginStruck,
-            formErrorMessage: "",
-            formData:{
+            loginErrorMessage: "",
+            loginData:{
                 email : "",
                 password : ""
             }
         }
     }
+    login = () =>{
+        const validate = this.refs.loginForm.getValue();
+        if (!validate) this.setState({loginErrorMessage: "Los datos del formulario erroneos"});
+        else  {
+            this.setState({loginErrorMessage: ""});
+            firebase.auth().signInWithEmailAndPassword(validate.email,validate.password)
+            .then(()=>this.refs.toast.show('Login Correcto ', 500,()=>{
+                this.props.navigation.goBack();
+            }))
+            .catch(error=> this.refs.toast.show('Login incorrecto revise sus datos', 2500))
+        }
+    };
+    /* loginFacebook = async () => {
+        const { type, token} = await Facebook.logInWithReadPermissionsAsync(
+            FacebookApi.application_id,
+            {permissions:FacebookApi.permission}
+        );
+        console.log(type);
+        console.log(token);
+    } */;
+    onChangeFormLogin = (formValue) => {
+        this.setState({loginData:formValue});
+    }
     render(){
-        const {loginStruck,loginOptions,formErrorMessage} = this.state;
+        const {loginStruck,loginOptions,loginErrorMessage} = this.state;
         return(
             <View style={styles.viewBody}>
                 <Image style={styles.logo}
@@ -35,12 +62,26 @@ export default class Login extends Component{
                   ref="loginForm"
                   type={loginStruck}
                   options = {loginOptions}
-                  value={this.state.formData}
-              />             
-                  
-                  <Button title="login" buttonStyle={styles.buttonLoginContainer} />
+                  value={this.state.loginData}
+                  onChange = {(formValue) => this.onChangeFormLogin(formValue)}
+              />                   
+              <Button title="login" buttonStyle={styles.buttonLoginContainer} 
+                onPress={()=>this.login()}
+                />
+                <Text style={styles.loginErrorMessage}>{loginErrorMessage}</Text> 
+                <Divider style= {styles.divider} />
+               {/*  <SocialIcon title='Iniciar Sesión con Facebook' button type='facebook' 
+                onPress={() => this.loginFacebook()}/> */}
                 </View>
-
+                <Toast
+                    ref="toast"
+                    position='bottom'
+                    positionValue={250}
+                    fadeInDuration={750}
+                    fadeOutDuration={1000}
+                    opacity={0.8}
+                    textStyle={{color:'#fff'}}
+                />
             </View>
         )
     }
@@ -69,5 +110,14 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginLeft: 10,
         marginRight: 10
+    },
+    loginErrorMessage: {
+        color:"#f00",
+        textAlign: "center",
+        marginTop: 30
+    },
+    divider: {
+        backgroundColor: "#00a680",
+        marginBottom: 10
     }
 });
