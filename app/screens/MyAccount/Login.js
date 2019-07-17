@@ -8,7 +8,6 @@ import * as Facebook from 'expo';
 
 
 import {LoginStruck,LoginOptions} from '../../forms/Login';
-//import {Facebook, FacebookApi} from '../../utils/Social';
 const Form = t.form.Form;
 const url = "../../../assets/img/5-tenedores-letras-icono-logo.png";
 export default class Login extends Component{
@@ -36,14 +35,7 @@ export default class Login extends Component{
             .catch(error=> this.refs.toast.show('Login incorrecto revise sus datos', 2500))
         }
     };
-    /* loginFacebook = async () => {
-        const { type, token} = await Facebook.logInWithReadPermissionsAsync(
-            FacebookApi.application_id,
-            {permissions:FacebookApi.permission}
-        );
-        console.log(type);
-        console.log(token);
-    } */;
+
     onChangeFormLogin = (formValue) => {
         this.setState({loginData:formValue});
     }
@@ -55,7 +47,6 @@ export default class Login extends Component{
                     source={require(url)}
                     containerStyle={styles.containerLogo}
                     resizeMode= "contain"
-                    PlaceholderContent={<ActivityIndicator/>}
                 />
                 <View style={styles.viewFrom}>
                 <Form style={styles.FormStyle}
@@ -68,10 +59,12 @@ export default class Login extends Component{
               <Button title="login" buttonStyle={styles.buttonLoginContainer} 
                 onPress={()=>this.login()}
                 />
+                <Text style={styles.textRegister}>¿Aun no tienes cuenta? {" "}
+                </Text>
+                <Text style={styles.btnRegister} onPress={()=>this.props.navigation.navigate("Register")}>Regístrate</Text>
                 <Text style={styles.loginErrorMessage}>{loginErrorMessage}</Text> 
-                <Divider style= {styles.divider} />
-               {/*  <SocialIcon title='Iniciar Sesión con Facebook' button type='facebook' 
-                onPress={() => this.loginFacebook()}/> */}
+
+                {/* <Divider style= {styles.divider} /> */}
                 </View>
                 <Toast
                     ref="toast"
@@ -92,7 +85,7 @@ const styles = StyleSheet.create({
         flex:1,   
         marginLeft: 40,
         marginRight:40,
-        marginTop: 40,
+        marginTop: 40
     },
     containerLogo:{
         alignItems: "center"
@@ -114,10 +107,16 @@ const styles = StyleSheet.create({
     loginErrorMessage: {
         color:"#f00",
         textAlign: "center",
-        marginTop: 30
+        marginTop: 30,
+        marginBottom: 20,
     },
-    divider: {
-        backgroundColor: "#00a680",
-        marginBottom: 10
+    textRegister: {
+        marginTop:20,
+        textAlign:  "center"       
+    },
+    btnRegister:{
+        color: "#00a680",
+        fontWeight: 'bold',
+        textAlign:  "center"
     }
 });

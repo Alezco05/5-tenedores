@@ -1,15 +1,15 @@
 import React,{Component} from 'react';
-import {StyleSheet,View} from "react-native";
+import {StyleSheet,View,ScrollView} from "react-native";
 
 import t from 'tcomb-form-native';
-import {Button, Text} from 'react-native-elements';
+import {Button, Text,Image} from 'react-native-elements';
 import Toast, {DURATION} from 'react-native-easy-toast';
 import * as firebase from  'firebase';
 
 import {RegisterOptions,RegisterStruct} from '../../forms/Register'; 
 
 
-
+const url = "../../../assets/img/5-tenedores-letras-icono-logo.png";
 const Form = t.form.Form;
 
 export default class MyAccount extends Component {
@@ -53,7 +53,13 @@ export default class MyAccount extends Component {
     render(){
         const {registerStruct,registerOptions,formErrorMessage} = this.state;
         return(
-            <View style={styles.viewBody}>
+         
+            <ScrollView style={styles.viewBody}>
+              <Image style={styles.logo}
+                    source={require(url)}
+                    containerStyle={styles.containerLogo}
+                    resizeMode= "contain"
+                />
               <Form 
                   ref="registerForm"
                   type={registerStruct}
@@ -72,7 +78,7 @@ export default class MyAccount extends Component {
                     opacity={0.8}
                     textStyle={{color:'#fff'}}
                 />
-            </View>
+            </ScrollView>
 
         );
     }
@@ -81,9 +87,14 @@ export default class MyAccount extends Component {
 const styles = StyleSheet.create({
     viewBody: {
         flex: 1,
-        justifyContent: "center",
         marginLeft: 40,
         marginRight: 40
+    },
+    logo:{
+        width: 300, 
+        height: 150,
+        marginTop: 30,
+        marginBottom: 20
     },
     buttonRegisterContainer: {
         backgroundColor: "#00a680",

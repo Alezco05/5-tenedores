@@ -1,9 +1,11 @@
 import React,{Component} from 'react';
 import {StyleSheet,View,Text} from "react-native";
-import {Button} from 'react-native-elements';
-import * as firebase from  'firebase';
 
+import * as firebase from  'firebase';
+import Toast, {DURATION} from 'react-native-easy-toast';
 import MyAccountGuess from '../../components/MyAccount/MyAccountGuest';
+
+import MyAccountUser from '../../components/MyAccount/MyAccountUser'
 
 export default class MyAccount extends Component {
     constructor(){
@@ -16,39 +18,15 @@ export default class MyAccount extends Component {
             else this.setState ({login: false})
         });
     }
-    goToScreen = nameScreen => {
-        this.props.navigation.navigate(nameScreen);
-    };
+    goToScreen = nameScreen => this.props.navigation.navigate(nameScreen);
+    //
     logout = () => firebase.auth().signOut();   
-    
+    //
     render(){
         const {login} = this.state;
-       if(login){
-           return (
-           <View style={styles.viewBody}>
-           <Text>Bienvenido</Text>
-           <Button title="Cerrar Sesion" onPress={()=> this.logout()}></Button>
-           </View>
-           );
-        }else{
-            return(
-               <View style={styles.viewBody}>
-                  <Text>MyAccount Screen ...</Text>
-                  <Button title="Registro" onPress={()=>this.goToScreen('Register')}/>
-                  <Button title="Login" onPress={()=>this.goToScreen('Login')}/>
-                </View> 
-                //<MyAccountGuess/>
-            );
-        }
+        if(login)return <MyAccountUser logout={(this.logout)}/>
+        else return  <MyAccountGuess goToScreen={(this.goToScreen)}/>             
     }
 }
 
-const styles = StyleSheet.create({
-    viewBody: {
-        flex: 1,
-        backgroundColor: "#fff",
-        alignItems: "center",
-        justifyContent: "center"
-    }
-});
 
