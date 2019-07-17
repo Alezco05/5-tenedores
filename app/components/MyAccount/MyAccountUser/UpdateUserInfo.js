@@ -16,7 +16,7 @@ export default class UpdateUserInfo extends Component {
                 iconNameLeft: "account-circle",
                 iconNameRight: "chevron-right",
                 color: "#ccc",
-                onPress: () => this.openOverLay("Nombre",this.updateUserDisplayName)
+                onPress: () => this.openOverLay("Nombre",this.updateUserDisplayName, props.userInfo.displayName)
             }, 
             {
                 title: "Cambiar Apellido",
@@ -47,14 +47,21 @@ export default class UpdateUserInfo extends Component {
     
     }
     updateUserDisplayName = async (newDisplayName) =>{
+        console.log(this.state)
         this.state.updateUserDisplayName(newDisplayName)
         this.setState({
             overlayComponent: null
         }) 
     }
-    openOverLay = (placeholder,updateFunction ) =>{ 
+    openOverLay = (placeholder,updateFunction,inputValue ) =>{ 
         this.setState({
-            overlayComponent: <OverLayOnInput isVisibleOverlay={true}/>
+            overlayComponent: <OverLayOnInput 
+            isVisibleOverlay={true}
+             placeholder={placeholder} 
+             updateFunction={updateFunction}
+             inputValue = {inputValue}
+             value={this.state.userInfo.displayName}
+            />
         });
     }
 

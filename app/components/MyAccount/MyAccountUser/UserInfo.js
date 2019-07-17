@@ -33,7 +33,7 @@ export default class UserInfo extends Component{
 
     };
     updateUserDisplayName = (newDisplayName) => {
-        console.log(newDisplayName)
+        console.log('User info: ' ,newDisplayName)
     };
     returnUpdateUserInfoComponent = userInfoData => {
         if (userInfoData.hasOwnProperty("uid")){

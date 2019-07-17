@@ -13,21 +13,37 @@ export default class OverLayOnInput extends Component {
 
     componentDidMount(){
     }
+    onChangeInput = inputData => {
+        this.setState({
+            inputValue: inputData
+        })
+    }
+    update = () =>{
+       const newValue = this.state.inputValue;
+
+       this.state.updateFunction(newValue);
+       this.setState({
+           isVisibleOverlay:false
+       });
+    }
 
     render(){
-        const {isVisibleOverlay} = this.state;
+        const {isVisibleOverlay,placeholder,inputValue} = this.state;
         return(
-
            <Overlay isVisible ={isVisibleOverlay} overlayBackgroundColor="transparent" overlayStyle={styles.overlayStyle}>
                <View style={styles.viewOverlay}>
-                   <Input containerStyle={styles.inputContainer} placeholder="testx"/>
-                   <Button buttonStyle={styles.buttonUpdate} title="Actualizar"/>
+                   <Input containerStyle={styles.inputContainer} 
+                   placeholder={placeholder} 
+                   onChangeText = {value => this.onChangeInput(value) }
+                   value={inputValue}
+                   />
+                   <Button buttonStyle={styles.buttonUpdate} title="Actualizar" onPress={()=>this.update()}/>
                </View>
            </Overlay>
         )
     }
 }
-
+//
 
 const styles = StyleSheet.create({
     overlayStyle: {
