@@ -5,9 +5,10 @@ import UpdateUserInfo from './UpdateUserInfo';
 import * as firebase from 'firebase';
 const uri = "../../../../assets/img/5-tenedores-letras-logo.png";
 export default class UserInfo extends Component{
-    constructor(state){
-        super(state);
+    constructor(props){
+        super(props);
         this.state = {
+            ...props,
             userInfo:{
                 displayName: "",
                 email: "",

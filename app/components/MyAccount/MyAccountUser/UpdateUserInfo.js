@@ -5,10 +5,10 @@ import { ListItem } from 'react-native-elements'
 //import menuConfig from './menuConfig';
 import OverLayOnInput from '../../Elements/OverLayOnInput';
 export default class UpdateUserInfo extends Component {
-    constructor(state) {
-        super(state);
+    constructor(props) {
+        super(props);
         this.state = {
-            ...state,
+            ...props,
             overlayComponent: null,
             menuConfig:[{
                 title: "Cambiar Nombre",
@@ -54,12 +54,12 @@ export default class UpdateUserInfo extends Component {
     }
     openOverLay = (placeholder,updateFunction ) =>{ 
         this.setState({
-            overlayComponent: <OverLayOnInput isVisibleOverlay={false}/>
+            overlayComponent: <OverLayOnInput isVisibleOverlay={true}/>
         });
     }
 
     render() {
-        const {menuConfig} = this.state;
+        const {menuConfig, overlayComponent} = this.state;
         return (
             <View>
             {menuConfig.map((item,index) => (
@@ -71,7 +71,7 @@ export default class UpdateUserInfo extends Component {
              containerStyle = {styles.contentCoontainerStyle}
              />
             ))}
-           
+            {overlayComponent}
             </View>
         )
 
