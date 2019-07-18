@@ -5,6 +5,8 @@ import { ListItem } from "react-native-elements";
 //import menuConfig from './menuConfig';
 import OverLayOnInput from "../../Elements/OverLayOnInput";
 import OverLayTwoInputs from "../../Elements/OverLayTwoInputs";
+import OverLayThreeInputs from "../../Elements/OverLayThreeInputs";
+
 export default class UpdateUserInfo extends Component {
   constructor(props) {
     super(props);
@@ -54,7 +56,7 @@ export default class UpdateUserInfo extends Component {
           iconNameRight: "chevron-right",
           color: "#ccc",
           onPress: () =>
-            console.log("Haz realizado click en cambiar Contraseña")
+            this.openOverLayThreeInputs("Tu contraseña", "nueva contraseña", "repetir nueva contraseña", this.updateUserPassword)
         }
       ]
     };
@@ -75,7 +77,7 @@ export default class UpdateUserInfo extends Component {
   openOverLay = (placeholder, updateFunction, inputValue) => {
     this.setState({
       overlayComponent: (
-        <OverLayOnInput
+        <OverayOnInput
           isVisibleOverlay={true}
           placeholder={placeholder}
           updateFunction={updateFunction}
@@ -105,6 +107,32 @@ export default class UpdateUserInfo extends Component {
       )
     });
   };
+  updateUserPassword = async (currentPassword, newPassword, repeatPassword) => {
+    console.log('currentPassword', currentPassword);
+    console.log('newPassword', newPassword);
+    console.log('repeatPassword', repeatPassword);
+    
+  };
+  openOverLayThreeInputs = (placeholderOne, placeholderTwo, placeholderThree, updateFunction)=>{
+    this.setState ({
+      overlayComponent:(
+
+      <OverLayThreeInputs
+        isVisibleOverlay={true}
+        placeholderOne={placeholderOne}
+        placeholderTwo={placeholderTwo}
+        placeholderThree={placeholderThree}
+        inputValueOne=""
+        inputValueTwo=""
+        inputValueThree=""
+        isPassword={true}
+        updateFunction={updateFunction}
+        
+      />
+        )
+    })
+    console.log("hola")
+  }
 
   render() {
     const { menuConfig, overlayComponent } = this.state;

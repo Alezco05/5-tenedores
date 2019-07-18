@@ -72,6 +72,17 @@ export default class UserInfo extends Component {
     await firebase.auth().currentUser.updateProfile(update);
     this.getUserInfo();
   };
+  updateUserPhotoUrl = async photoUri => {
+    const update = {
+      photoURL: photoUri
+    };
+    await firebase.auth().currentUser.updateProfile(update);
+    this.getUserInfo();
+  };
+  updateUserPassword = async (currentPassword, newpassword) => {
+    console.log('currentPassword', currentPassword);
+    console.log('newPassword', newPassword);
+  };
   returnUpdateUserInfoComponent = userInfoData => {
     if (userInfoData.hasOwnProperty("uid")) {
       return (
@@ -79,6 +90,7 @@ export default class UserInfo extends Component {
           userInfo={this.state.userInfo}
           updateUserDisplayName={this.updateUserDisplayName}
           updateUserEmail={this.updateUserEmail}
+          updateUserPassword={this.updateUserPassword}
         />
       );
     }
@@ -94,28 +106,106 @@ export default class UserInfo extends Component {
         allowsEditing: true,
         aspects: [4, 3]
       });
-      console.log(resultado);
       if (resultado.cancelled)
         this.refs.toast.show("Haz cerrado la galeria", 1500);
-      else console.log("Haz seleccionado una imagen");
+      else {
+        const { uid } = this.state.userInfo;
+        this.updateImage(resultado.uri, uid)
+          .then(resolve => {
+            this.refs.toast.show("Avatar actualizado correctamente", 1500);
+            firebase.storage().ref("avatar/"+uid).getDownloadURL()
+            .then(resolve => this.updateUserPhotoUrl(resolve))
+            .catch(error=>this.refs.toast.show("Error al recuperar el avatar del servidor", 1500))
+          })
+          .catch(error => {
+            this.refs.toast.show("Error al actualizar", 2500);
+          });
+      }
     }
   };
+  
+
   takePicture = async () => {
-    const resultPermission = await Permissions.askAsync(
+    const resultPermission = await Permissions.getAsync(
       Permissions.CAMERA_ROLL
     );
     if (resultPermission.status === "denied")
       this.refs.toast.show("Es necesario aceptar los permisos!", 1500);
-    const result = await ImagePicker.launchCameraAsync({
-      allowEditing: false,
-      exif: true
-    });
-    if (!result.cancelled) {
-      this.setState({ photoURL: result.uri });
+    else {
+      const resultado = await ImagePicker.launchCameraAsync({
+        allowsEditing: false,
+        aspects: [4, 3]
+      });
+      if (resultado.cancelled)
+        this.refs.toast.show("Haz cerrado la galeria", 1500);
+      else {
+        const { uid } = this.state.userInfo;
+        this.updateCamera(resultado.uri, uid)
+          .then(resolve => {
+            this.refs.toast.show("Foto actualizado correctamente", 2500);
+          })
+          .catch(error => {
+            this.refs.toast.show("Error al actualizar", 2500);
+          });
+      }
     }
-    CameraRoll.saveToCameraRoll(this.state.photoURL);
   };
 
+  updateImage = (async = (uri, nameImage) => {
+    return new Promise((resolve, reject) => {
+      let xhr = new XMLHttpRequest();
+      xhr.onerror = reject;
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4) {
+          resolve(xhr.response);
+        }
+      };
+      xhr.open("GET", uri);
+      xhr.responseType = "blob";
+      xhr.send();
+    })
+      .then(async resolve => {
+        let ref = firebase
+          .storage()
+          .ref()
+          .child("avatar/" + nameImage);
+        return await ref.put(resolve);
+      })
+      .catch(error => {
+        this.ref.toast.show(
+          "Error al subir la mimagen al servidor, intentelo mas tarde",
+          1500
+        );
+      });
+  });
+
+  updateCamera = (async = (uri, nameImage) => {
+    return new Promise((resolve, reject) => {
+      let xhr = new XMLHttpRequest();
+      xhr.onerror = reject;
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4) {
+          resolve(xhr.response);
+        }
+      };
+      xhr.open("GET", uri);
+      xhr.responseType = "blob";
+      xhr.send();
+    })
+      .then(async resolve => {
+        let ref = firebase
+          .storage()
+          .ref()
+          .child("camera/" + nameImage);
+        return await ref.put(resolve);
+      })
+      .catch(error => {
+        this.ref.toast.show(
+          "Error al subir la mimagen al servidor, intentelo mas tarde",
+          1500
+        );
+      });
+  });
   render() {
     const { displayName, email, photoURL } = this.state.userInfo;
     return (
@@ -144,16 +234,9 @@ export default class UserInfo extends Component {
           opacity={0.8}
           textStyle={{ color: "#fff" }}
         />
-        <Button buttonStyle={styles.iconCamera}
-          icon={
-            <Icon
-              iconStyle={styles}
-              name="camera-iris"
-              type="material-community"
-              size={60}
-            />
-          }
-          iconRight={true}
+        <Button
+          buttonStyle={styles.buttonStyle}
+          icon={<Icon name="camera-iris" type="material-community" size={60} />}
           onPress={() => this.takePicture()}
           type="clear"
         />
@@ -176,9 +259,9 @@ const styles = StyleSheet.create({
   displayName: {
     fontWeight: "bold"
   },
-   iconCamera: {
+  buttonStyle: {
     position: "absolute",
-    bottom:-215,
-    right:0
-  } 
+    bottom: -215,
+    right: 0
+  }
 });
