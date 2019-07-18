@@ -4,6 +4,7 @@ import { ListItem } from 'react-native-elements'
 
 //import menuConfig from './menuConfig';
 import OverLayOnInput from '../../Elements/OverLayOnInput';
+import OverLayTwoInputs from '../../Elements/OverLayTwoInputs';
 export default class UpdateUserInfo extends Component {
     constructor(props) {
         super(props);
@@ -24,7 +25,7 @@ export default class UpdateUserInfo extends Component {
                 iconNameLeft: "account",
                 iconNameRight: "chevron-right",
                 color: "#ccc",
-                onPress: () => console.log("Haz realizado click en cambiar Apellidos")
+                onPress: () => console.log("Cambiar apellido")
             },
             {
                 title: "Cambiar Email",
@@ -32,7 +33,7 @@ export default class UpdateUserInfo extends Component {
                 iconNameLeft: "at",
                 iconNameRight: "chevron-right",
                 color: "#ccc",
-                onPress: () => console.log("Haz realizado click en cambiar Email")
+                onPress: () => this.openOverLayTwoInputs("Email","Password", props.userInfo.email, this.updateUserEmail)
             },
             {
                 title: "Cambiar Contraseña",
@@ -43,13 +44,17 @@ export default class UpdateUserInfo extends Component {
                 onPress: () => console.log("Haz realizado click en cambiar Contraseña")
             }
         ]
-    } 
-    console.log(props.userInfo);
-    
+    }     
     }
     updateUserDisplayName = async (newDisplayName) =>{
         if(newDisplayName) this.state.updateUserDisplayName(newDisplayName)
-      
+        this.setState({
+            overlayComponent: null
+        }) 
+    }
+    updateUserEmail = async (newEmail,password) =>{
+        const emailOld = this.props.userInfo.email;
+        if(emailOld != newEmail) this.state.updateUserEmail(newEmail,password)
         this.setState({
             overlayComponent: null
         }) 
@@ -62,6 +67,19 @@ export default class UpdateUserInfo extends Component {
              updateFunction={updateFunction}
              inputValue = {inputValue}
              value={this.state.userInfo.displayName}
+            />
+        });
+    }
+    openOverLayTwoInputs = (placeholderOne,placeholderTwo,inputValueOne, updateFunction ) =>{ 
+        this.setState({
+            overlayComponent: <OverLayTwoInputs 
+            isVisibleOverlay={true}
+             placeholderOne={placeholderOne} 
+             placeholderTwo={placeholderTwo} 
+             updateFunction={updateFunction}
+             inputValueOne = {inputValueOne}
+             isPassword={true}
+             value={this.state.userInfo.email}
             />
         });
     }
