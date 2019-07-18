@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {StyleSheet,View,Text} from 'react-native';
-import {Overlay, Input,Button} from 'react-native-elements';
+import {StyleSheet,View} from 'react-native';
+import {Overlay, Input,Button, Icon} from 'react-native-elements';
 let a = true
 export default class OverLayOnInput extends Component {
     constructor(props){
@@ -8,7 +8,6 @@ export default class OverLayOnInput extends Component {
         this.state={
             ...props
         }
-        console.log(this.state)
     }
 
     componentDidMount(){
@@ -26,11 +25,16 @@ export default class OverLayOnInput extends Component {
            isVisibleOverlay:false
        });
     }
-
+    close = () =>{
+        this.setState({
+            isVisibleOverlay:false
+        });
+        this.state.updateFunction(null);
+    }
     render(){
         const {isVisibleOverlay,placeholder,inputValue} = this.state;
         return(
-           <Overlay isVisible ={isVisibleOverlay} overlayBackgroundColor="transparent" overlayStyle={styles.overlayStyle}>
+           <Overlay isVisible ={isVisibleOverlay} overlayBackgroundColor="none" overlayStyle={styles.overlayStyle}>
                <View style={styles.viewOverlay}>
                    <Input containerStyle={styles.inputContainer} 
                    placeholder={placeholder} 
@@ -38,6 +42,13 @@ export default class OverLayOnInput extends Component {
                    value={inputValue}
                    />
                    <Button buttonStyle={styles.buttonUpdate} title="Actualizar" onPress={()=>this.update()}/>
+                   <Icon type="material-community"
+                       name="close-circle-outline"
+                       containerStyle={styles.containerIconClose}
+                       size={30}
+                       color="green"
+                       onPress={()=>this.close()}
+                   />
                </View>
            </Overlay>
         )
@@ -52,7 +63,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
      viewOverlay:{
-        width: "100%",
+        width: "120%",
         backgroundColor: "#fff",
         padding: 40,
         borderColor: "#00a680",
@@ -66,5 +77,10 @@ const styles = StyleSheet.create({
     },
     buttonUpdate: {
         backgroundColor: "#00a680"
+    },
+    containerIconClose:{
+        position: "absolute",
+        right:-1,
+        top:-1,
     }
 })

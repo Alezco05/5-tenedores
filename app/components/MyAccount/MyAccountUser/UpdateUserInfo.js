@@ -43,12 +43,13 @@ export default class UpdateUserInfo extends Component {
                 onPress: () => console.log("Haz realizado click en cambiar Contraseña")
             }
         ]
-        } 
+    } 
+    console.log(props.userInfo);
     
     }
     updateUserDisplayName = async (newDisplayName) =>{
-        console.log(this.state)
-        this.state.updateUserDisplayName(newDisplayName)
+        if(newDisplayName) this.state.updateUserDisplayName(newDisplayName)
+      
         this.setState({
             overlayComponent: null
         }) 

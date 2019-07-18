@@ -32,8 +32,12 @@ export default class UserInfo extends Component{
         return photoURL ? photoURL : uri;
 
     };
-    updateUserDisplayName = (newDisplayName) => {
-        console.log('User info: ' ,newDisplayName)
+    updateUserDisplayName = async (newDisplayName) => {
+        const update = {
+            displayName: newDisplayName
+        };
+        await firebase.auth().currentUser.updateProfile(update);
+        this.getUserInfo();
     };
     returnUpdateUserInfoComponent = userInfoData => {
         if (userInfoData.hasOwnProperty("uid")){
@@ -43,9 +47,6 @@ export default class UserInfo extends Component{
              
             )
         }
-        console.log("returnUpdateUserInfoComponent");
-        console.log(userInfoData);
-
     };
     
     render(){
@@ -61,9 +62,10 @@ export default class UserInfo extends Component{
                 containerStyle={styles.userInfoAvatar}
                 
             />
+            <View>
             <Text style={styles.displayName}>{displayName}</Text>
             <Text>{email}</Text>            
-            
+            </View>
             </View>
             {this.returnUpdateUserInfoComponent(this.state.userInfo)}
            
