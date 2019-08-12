@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
+import {Svg} from 'expo';
 //
 import { StyleSheet, View, Text, CameraRoll } from "react-native";
 import { Avatar, Icon, Button } from "react-native-elements";
@@ -9,7 +10,7 @@ import Toast from "react-native-easy-toast";
 import * as firebase from "firebase";
 //
 import UpdateUserInfo from "./UpdateUserInfo";
-//
+
 const uri = "../../../../assets/img/5-tenedores-letras-logo.png";
 export default class UserInfo extends Component {
   constructor(props) {
@@ -80,8 +81,8 @@ export default class UserInfo extends Component {
     this.getUserInfo();
   };
   updateUserPassword = async (currentPassword, newpassword) => {
-    console.log('currentPassword', currentPassword);
-    console.log('newPassword', newPassword);
+    console.log("currentPassword", currentPassword);
+    console.log("newPassword", newPassword);
   };
   returnUpdateUserInfoComponent = userInfoData => {
     if (userInfoData.hasOwnProperty("uid")) {
@@ -95,6 +96,43 @@ export default class UserInfo extends Component {
       );
     }
   };
+  takePicture = async () => {
+    const resultPermission = await Permissions.getAsync(
+      Permissions.CAMERA_ROLL
+    );
+    if (resultPermission.status === "denied")
+      this.refs.toast.show("Es necesario aceptar los permisos!", 1500);
+    else {
+      const resultado = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspects: [4, 3]
+      });
+      if (resultado.cancelled)
+        this.refs.toast.show("Haz cerrado la galeria", 1500);
+      else {
+        const { uid } = this.state.userInfo;
+        this.updateImage(resultado.uri, uid)
+          .then(resolve => {
+            this.refs.toast.show("Avatar actualizado correctamente", 1500);
+            firebase
+              .storage()
+              .ref("avatar/" + uid)
+              .getDownloadURL()
+              .then(resolve => this.updateUserPhotoUrl(resolve))
+              .catch(error =>
+                this.refs.toast.show(
+                  "Error al recuperar el avatar del servidor",
+                  1500
+                )
+              );
+          })
+          .catch(error => {
+            this.refs.toast.show("Error al actualizar", 2500);
+          });
+      }
+    }
+  };
+
   changeAvatarUser = async () => {
     const resultPermission = await Permissions.getAsync(
       Permissions.CAMERA_ROLL
@@ -113,36 +151,17 @@ export default class UserInfo extends Component {
         this.updateImage(resultado.uri, uid)
           .then(resolve => {
             this.refs.toast.show("Avatar actualizado correctamente", 1500);
-            firebase.storage().ref("avatar/"+uid).getDownloadURL()
-            .then(resolve => this.updateUserPhotoUrl(resolve))
-            .catch(error=>this.refs.toast.show("Error al recuperar el avatar del servidor", 1500))
-          })
-          .catch(error => {
-            this.refs.toast.show("Error al actualizar", 2500);
-          });
-      }
-    }
-  };
-  
-
-  takePicture = async () => {
-    const resultPermission = await Permissions.getAsync(
-      Permissions.CAMERA_ROLL
-    );
-    if (resultPermission.status === "denied")
-      this.refs.toast.show("Es necesario aceptar los permisos!", 1500);
-    else {
-      const resultado = await ImagePicker.launchCameraAsync({
-        allowsEditing: false,
-        aspects: [4, 3]
-      });
-      if (resultado.cancelled)
-        this.refs.toast.show("Haz cerrado la galeria", 1500);
-      else {
-        const { uid } = this.state.userInfo;
-        this.updateCamera(resultado.uri, uid)
-          .then(resolve => {
-            this.refs.toast.show("Foto actualizado correctamente", 2500);
+            firebase
+              .storage()
+              .ref("avatar/" + uid)
+              .getDownloadURL()
+              .then(resolve => this.updateUserPhotoUrl(resolve))
+              .catch(error =>
+                this.refs.toast.show(
+                  "Error al recuperar el avatar del servidor",
+                  1500
+                )
+              );
           })
           .catch(error => {
             this.refs.toast.show("Error al actualizar", 2500);
@@ -196,7 +215,7 @@ export default class UserInfo extends Component {
         let ref = firebase
           .storage()
           .ref()
-          .child("camera/" + nameImage);
+          .child("image/" + nameImage);
         return await ref.put(resolve);
       })
       .catch(error => {
@@ -237,13 +256,14 @@ export default class UserInfo extends Component {
         <Button
           buttonStyle={styles.buttonStyle}
           icon={<Icon name="camera-iris" type="material-community" size={60} />}
-          onPress={() => this.takePicture()}
+          onPress={() => this.prueba()}
           type="clear"
         />
       </View>
     );
   }
 }
+
 const styles = StyleSheet.create({
   viewUserInfo: {
     alignItems: "center",

@@ -17,11 +17,9 @@ export default class MyAccountGuess extends Component {
           PlaceholderContent={<ActivityIndicator />}
           resizeMode="contain"
         />
-        <Text style={styles.title}>Consulta tu perfil de 5 Tenedores</Text>
+        <Text style={styles.title}>Consulta tu perfil</Text>
         <Text style={styles.text}>
-          ¿Como describirias tu mejor restaurante? Busca y vizualiza los mejores
-          restaurantes de una forma sencilla, votal cual te ha gustado más y
-          comenta como ha sido tu experiencia.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
         </Text>
         <Button
           title="Ver tu perfil"

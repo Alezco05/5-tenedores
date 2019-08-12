@@ -7,6 +7,7 @@ import OverLayOnInput from "../../Elements/OverLayOnInput";
 import OverLayTwoInputs from "../../Elements/OverLayTwoInputs";
 import OverLayThreeInputs from "../../Elements/OverLayThreeInputs";
 
+
 export default class UpdateUserInfo extends Component {
   constructor(props) {
     super(props);
@@ -77,7 +78,7 @@ export default class UpdateUserInfo extends Component {
   openOverLay = (placeholder, updateFunction, inputValue) => {
     this.setState({
       overlayComponent: (
-        <OverayOnInput
+        <OverLayOnInput
           isVisibleOverlay={true}
           placeholder={placeholder}
           updateFunction={updateFunction}
@@ -131,7 +132,6 @@ export default class UpdateUserInfo extends Component {
       />
         )
     })
-    console.log("hola")
   }
 
   render() {

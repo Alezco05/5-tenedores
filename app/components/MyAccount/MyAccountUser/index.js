@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
+import { StyleSheet, View, Text, ActivityIndicator , Button} from "react-native";
 
 import UserInfo from "./UserInfo";
 export default class MyAccountUser extends Component {
@@ -7,16 +7,15 @@ export default class MyAccountUser extends Component {
     super(props);
   }
   render() {
-    //const {logout} = this.props;
+    const {logout} = this.props;
     return (
       <View>
         <UserInfo />
-        {/*  <Button title="Cerrar Sesión" buttonStyle={styles.btnViewProfile} onPress={()=> logout()}></Button>*/}
+          <Button title="Cerrar Sesión" buttonStyle={styles.btnViewProfile} onPress={()=> logout()}></Button>
       </View>
     );
   }
 }
-
 const styles = StyleSheet.create({
   viewBody: {}
 });
